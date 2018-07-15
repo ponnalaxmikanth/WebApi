@@ -72,6 +72,7 @@ namespace BusinessEntity
         public string Description { get; set; }
         public DateTime CreatedDate { get; set; }
         public int PortfolioId { get; set; }
+        public bool isDefaultFolio { get; set; }
     }
 
     public partial class MF_FundCategory
@@ -157,6 +158,32 @@ namespace BusinessEntity
         public decimal Units { get; set; }
 
         public bool IsSIP { get; set; }
+    }
+
+    public partial class GetFundNavRequest
+    {
+        public int SchemaCode { get; set; }
+        public DateTime Date { get; set; }
+    }
+
+    public partial class GetFundValueRequst
+    {
+        public int PortfolioId { get; set; }
+        public int SchemaCode { get; set; }
+        public int FolioId { get; set; }
+        public int OptionId { get; set; }
+    }
+
+    public partial class FundValueResponse
+    {
+        public int SchemaCode { get; set; }
+        public decimal Amount { get; set; }
+        public decimal Units { get; set; }
+        public decimal Dividend { get; set; }
+        public decimal AvgNav { get; set; }
+        public decimal LatestNav { get; set; }
+        public DateTime Date { get; set; }
+        public decimal LatestValue { get; set; }
     }
 
 }

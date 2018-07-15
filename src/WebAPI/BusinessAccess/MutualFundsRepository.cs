@@ -45,7 +45,7 @@ namespace BusinessAccess
         {
             List<MF_FundHouses> result = new List<MF_FundHouses>();
 
-            if(datatable != null && datatable.Rows.Count > 0)
+            if (datatable != null && datatable.Rows.Count > 0)
             {
                 result = (from dr in datatable.AsEnumerable()
                           select new MF_FundHouses()
@@ -102,7 +102,6 @@ namespace BusinessAccess
             return result;
         }
 
-
         public List<MF_FundOptions> GetFundOptions()
         {
             return MapFundOptions(new MutualFundsDataAccess().GetFundOptions());
@@ -141,9 +140,10 @@ namespace BusinessAccess
                           {
                               FolioId = int.Parse(dr["FolioId"].ToString()),
                               FolioNumber = dr["FolioNumber"].ToString(),
-                              Description  = dr["Description"].ToString(),
+                              Description = dr["Description"].ToString(),
                               FundHouseId = int.Parse(dr["FundHouseId"].ToString()),
                               PortfolioId = int.Parse(dr["portfolioId"].ToString()),
+                              isDefaultFolio = dr["isDefaultFolio"].ToString() == "Y" ? true : false
                           }).ToList();
             }
             return result;
@@ -221,6 +221,44 @@ namespace BusinessAccess
         public void AddTransaction(AddMFTransactionRequest mfTransactionRequest)
         {
             new MutualFundsDataAccess().AddTransaction(mfTransactionRequest);
+        }
+
+        public decimal GetFundNav(GetFundNavRequest getFundNavRequest)
+        {
+            DataTable dtResult = new MutualFundsDataAccess().GetFundNav(getFundNavRequest);
+
+            if (dtResult != null && dtResult.Rows.Count > 0)
+                return decimal.Parse(dtResult.Rows[0]["NAV"].ToString());
+            else
+                return -9999999;
+        }
+
+        public FundValueResponse GetFundValue(GetFundValueRequst getFundValueRequest)
+        {
+            DataTable dtResult = new MutualFundsDataAccess().GetFundValue(getFundValueRequest);
+
+            return MapFundValue(dtResult);
+        }
+
+        private FundValueResponse MapFundValue(DataTable dtResult)
+        {
+            FundValueResponse response = null;
+            if (dtResult != null)
+            {
+                response = (from dr in dtResult.AsEnumerable()
+                            select new FundValueResponse()
+                            {
+                                SchemaCode = int.Parse(dr["SchemaCode"].ToString()),
+                                Amount = decimal.Parse(dr["Amount"].ToString()),
+                                AvgNav = decimal.Parse(dr["avgNav"].ToString()),
+                                Date = DateTime.Parse(dr["Date"].ToString()),
+                                Dividend = decimal.Parse(dr["Dividend"].ToString()),
+                                LatestNav = decimal.Parse(dr["latestNav"].ToString()),
+                                LatestValue = decimal.Parse(dr["LatestValue"].ToString()),
+                                Units = decimal.Parse(dr["Units"].ToString()),
+                            }).FirstOrDefault();
+            }
+            return response;
         }
     }
 }

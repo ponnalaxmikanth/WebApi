@@ -128,5 +128,36 @@ namespace DataAccess
             
         }
 
+        public DataTable GetFundNav(GetFundNavRequest getFundNavRequest)
+        {
+            List<SqlParameter> parameters = new List<SqlParameter>();
+
+            parameters.Add(new SqlParameter() { DbType = DbType.Int32, ParameterName = "schemaCode", Value = getFundNavRequest.SchemaCode });
+            parameters.Add(new SqlParameter() { DbType = DbType.Date, ParameterName = "date", Value = getFundNavRequest.Date.Date });
+            
+
+            DataSet ds = SQLHelper.ExecuteProcedure("PersonalFinance", "GetFundPrice", CommandType.StoredProcedure, parameters);
+
+            if (ds != null)
+                return ds.Tables[0];
+            return null;
+        }
+
+        public DataTable GetFundValue(GetFundValueRequst getFundValueRequest)
+        {
+            List<SqlParameter> parameters = new List<SqlParameter>();
+
+            parameters.Add(new SqlParameter() { DbType = DbType.Int32, ParameterName = "portfolio", Value = getFundValueRequest.PortfolioId });
+            parameters.Add(new SqlParameter() { DbType = DbType.Int32, ParameterName = "schemaCode", Value = getFundValueRequest.SchemaCode });
+            parameters.Add(new SqlParameter() { DbType = DbType.Int32, ParameterName = "folioId", Value = getFundValueRequest.FolioId });
+            parameters.Add(new SqlParameter() { DbType = DbType.Int32, ParameterName = "optionId", Value = getFundValueRequest.OptionId });
+
+
+            DataSet ds = SQLHelper.ExecuteProcedure("PersonalFinance", "GetFundValue", CommandType.StoredProcedure, parameters);
+
+            if (ds != null)
+                return ds.Tables[0];
+            return null;
+        }
     }
 }

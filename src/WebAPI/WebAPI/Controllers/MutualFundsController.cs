@@ -87,5 +87,21 @@ namespace WebAPI.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, "Y");
         }
 
+        [HttpPost]
+        [Route("api/MutualFunds/GetFundNav")]
+        public HttpResponseMessage GetFundNav(GetFundNavRequest _getFundNavRequest)
+        {
+            decimal value = new MutualFundsRepository().GetFundNav(_getFundNavRequest);
+            return Request.CreateResponse(HttpStatusCode.OK, value);
+        }
+
+        [HttpPost]
+        [Route("api/MutualFunds/GetFundValue")]
+        public HttpResponseMessage GetFundValue(GetFundValueRequst _getFundValueRequest)
+        {
+            FundValueResponse response = new MutualFundsRepository().GetFundValue(_getFundValueRequest);
+            return Request.CreateResponse(HttpStatusCode.OK, response);
+        }
+
     }
 }
