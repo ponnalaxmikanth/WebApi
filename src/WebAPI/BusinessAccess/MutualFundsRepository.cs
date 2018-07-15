@@ -172,9 +172,9 @@ namespace BusinessAccess
         }
 
 
-        public List<MFFund> GetMyFunds()
+        public List<MFFund> GetMyFunds(GetMyFundsRequest request)
         {
-            return MapMyFunds(datatable: new MutualFundsDataAccess().GetMyFunds());
+            return MapMyFunds(datatable: new MutualFundsDataAccess().GetMyFunds(request));
         }
 
         private List<MFFund> MapMyFunds(DataTable datatable)

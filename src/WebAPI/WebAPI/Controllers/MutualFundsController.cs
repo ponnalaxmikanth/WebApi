@@ -71,11 +71,11 @@ namespace WebAPI.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("api/MutualFunds/GetMyFunds")]
-        public HttpResponseMessage GetMyFunds()
+        public HttpResponseMessage GetMyFunds(GetMyFundsRequest request)
         {
-            List<MFFund> result = new MutualFundsRepository().GetMyFunds();
+            List<MFFund> result = new MutualFundsRepository().GetMyFunds(request);
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 

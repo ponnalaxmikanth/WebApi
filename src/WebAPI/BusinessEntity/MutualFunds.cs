@@ -186,4 +186,10 @@ namespace BusinessEntity
         public decimal LatestValue { get; set; }
     }
 
+    public class GetMyFundsRequest
+    {
+        public string Type { get; set; }
+        public int PortfolioId { get; set; }
+    }
+
 }

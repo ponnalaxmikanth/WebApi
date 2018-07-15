@@ -75,9 +75,11 @@ namespace DataAccess
             return null;
         }
 
-        public DataTable GetMyFunds()
+        public DataTable GetMyFunds(GetMyFundsRequest request)
         {
             List<SqlParameter> parameters = new List<SqlParameter>();
+            parameters.Add(new SqlParameter() { DbType = DbType.String, ParameterName = "transaction", Value = request.Type });
+            parameters.Add(new SqlParameter() { DbType = DbType.Int32, ParameterName = "portfolioId", Value = request.PortfolioId });
 
             DataSet ds = SQLHelper.ExecuteProcedure("PersonalFinance", "GetMyFunds", CommandType.StoredProcedure, parameters);
             if (ds != null)
