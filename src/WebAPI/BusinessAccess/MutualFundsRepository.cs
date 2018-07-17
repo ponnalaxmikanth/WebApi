@@ -206,6 +206,7 @@ namespace BusinessAccess
                                   FundTypeId = int.Parse(dr["FundTypeId"].ToString()),
                                   FundType = dr["FundType"].ToString()
                               },
+                              PortfolioId = int.Parse(dr["PortfolioId"].ToString()),
                               FundId = int.Parse(dr["FundId"].ToString()),
                               SchemaCode = int.Parse(dr["SchemaCode"].ToString()),
                               FundName = dr["FundName"].ToString(),

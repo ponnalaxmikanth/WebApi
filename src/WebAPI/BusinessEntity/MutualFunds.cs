@@ -118,6 +118,7 @@ namespace BusinessEntity
 
     public class MFFund
     {
+        public int PortfolioId { get; set; }
         public int FundId { get; set; }
         public MF_FundHouses FundHouse { get; set; }
         public MF_FundTypes FundType { get; set; }
