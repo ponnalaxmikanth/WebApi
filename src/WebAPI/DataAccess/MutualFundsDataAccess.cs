@@ -161,5 +161,19 @@ namespace DataAccess
                 return ds.Tables[0];
             return null;
         }
+
+        public DataTable GetMyMFFundInvestments(GetMFFundInvestmentsRequest request)
+        {
+            List<SqlParameter> parameters = new List<SqlParameter>();
+
+            parameters.Add(new SqlParameter() { DbType = DbType.Int32, ParameterName = "portfolioId", Value = request.PortfolioId });
+            parameters.Add(new SqlParameter() { DbType = DbType.Int32, ParameterName = "fundid", Value = request.FundId });
+            parameters.Add(new SqlParameter() { DbType = DbType.Int32, ParameterName = "folioId", Value = request.FolioId });
+
+            DataSet ds = SQLHelper.ExecuteProcedure("PersonalFinance", "GetMyMFFundInvestments", CommandType.StoredProcedure, parameters);
+            if (ds != null)
+                return ds.Tables[0];
+            return null;
+        }
     }
 }

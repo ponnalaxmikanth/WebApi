@@ -193,4 +193,11 @@ namespace BusinessEntity
         public int PortfolioId { get; set; }
     }
 
+    public class GetMFFundInvestmentsRequest
+    {
+        public int PortfolioId { get; set; }
+        public int FolioId { get; set; }
+        public int FundId { get; set; }
+    }
+
 }

@@ -261,5 +261,36 @@ namespace BusinessAccess
             }
             return response;
         }
+
+        public List<MFTransactions> GetMFFundInvestments(GetMFFundInvestmentsRequest _getMFFundInvestmentsRequest)
+        {
+            DataTable dtResult = new MutualFundsDataAccess().GetMyMFFundInvestments(_getMFFundInvestmentsRequest);
+
+            return MapMFFundInvestments(dtResult);
+        }
+
+        private List<MFTransactions> MapMFFundInvestments(DataTable dtResult)
+        {
+            List<MFTransactions> result = null;
+            if(dtResult != null)
+            {
+                result = (from dr in dtResult.AsEnumerable()
+                          select new MFTransactions()
+                          {
+                              TransactionId = int.Parse(dr["TransactionId"].ToString()),
+                              FolioId = int.Parse(dr["FolioId"].ToString()),
+                              FundDetails = new FundDetails()
+                              {
+                                  FundId = int.Parse(dr["FundId"].ToString()),
+                              },
+                              PurchaseDate = DateTime.Parse(dr["PurchaseDate"].ToString()),
+                              Amount = decimal.Parse(dr["Amount"].ToString()),
+                              Units = decimal.Parse(dr["Units"].ToString()),
+                              DividendPerNAV = decimal.Parse(dr["DividendPerNAV"].ToString()),
+                              Dividend = decimal.Parse(dr["Dividend"].ToString())
+                          }).ToList();
+            }
+            return result;
+        }
     }
 }
