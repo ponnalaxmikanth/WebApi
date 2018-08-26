@@ -219,9 +219,41 @@ namespace BusinessAccess
             return result;
         }
 
-        public void AddTransaction(AddMFTransactionRequest mfTransactionRequest)
+        public AddMFTransactionResponse AddTransaction(AddMFTransactionRequest mfTransactionRequest)
         {
-            new MutualFundsDataAccess().AddTransaction(mfTransactionRequest);
+            int retVal = -1;
+            AddMFTransactionResponse response = new AddMFTransactionResponse();
+             DataTable dtResult = new MutualFundsDataAccess().AddTransaction(mfTransactionRequest);
+
+            if (dtResult == null || dtResult.Rows.Count <= 0)
+            {
+                response = new AddMFTransactionResponse()
+                {
+                    ReturnCode = retVal,
+                    ReturnMessage = "Failed to update!!"
+                };
+            }
+
+            int.TryParse(dtResult.Rows[0][0].ToString(), out retVal);
+
+            if (retVal == 0)
+            {
+                response = new AddMFTransactionResponse()
+                {
+                    ReturnCode = retVal,
+                    ReturnMessage = "Success"
+                };
+            }
+            else
+            {
+                response = new AddMFTransactionResponse()
+                {
+                    ReturnCode = retVal,
+                    ReturnMessage = "Failed to update!!"
+                };
+            }
+
+            return response;
         }
 
         public decimal GetFundNav(GetFundNavRequest getFundNavRequest)

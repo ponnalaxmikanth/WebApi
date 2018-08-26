@@ -161,6 +161,12 @@ namespace BusinessEntity
         public bool IsSIP { get; set; }
     }
 
+    public partial class AddMFTransactionResponse
+    {
+        public int ReturnCode { get; set; }
+        public string ReturnMessage { get; set; }
+    }
+
     public partial class GetFundNavRequest
     {
         public int SchemaCode { get; set; }

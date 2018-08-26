@@ -107,7 +107,7 @@ namespace DataAccess
             return null;
         }
 
-        public void AddTransaction(AddMFTransactionRequest request)
+        public DataTable AddTransaction(AddMFTransactionRequest request)
         {
             List<SqlParameter> parameters = new List<SqlParameter>();
 
@@ -127,7 +127,10 @@ namespace DataAccess
             parameters.Add(new SqlParameter() { DbType = DbType.String, ParameterName = "SIP", Value = (request.IsSIP == true ? "Y" : "N") });
 
             DataSet ds = SQLHelper.ExecuteProcedure("PersonalFinance", "AddMFPurchase", CommandType.StoredProcedure, parameters);
-            
+            if (ds != null)
+                return ds.Tables[0];
+            return null;
+
         }
 
         public DataTable GetFundNav(GetFundNavRequest getFundNavRequest)
