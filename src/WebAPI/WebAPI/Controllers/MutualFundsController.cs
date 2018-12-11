@@ -84,13 +84,6 @@ namespace WebAPI.Controllers
         public HttpResponseMessage AddTransaction(AddMFTransactionRequest _mfTransactionRequest)
         {
             AddMFTransactionResponse response = new MutualFundsRepository().AddTransaction(_mfTransactionRequest);
-            //return Request.CreateResponse(HttpStatusCode.OK, retValue);
-
-            //AddMFTransactionResponse response = new AddMFTransactionResponse()
-            //{
-            //    ReturnCode = 0,
-            //    ReturnMessage = "Success"
-            //};
             return Request.CreateResponse(HttpStatusCode.OK, response);
         }
 
@@ -115,6 +108,14 @@ namespace WebAPI.Controllers
         public HttpResponseMessage GetMFFundInvestments(GetMFFundInvestmentsRequest _getMFFundInvestmentsRequest)
         {
             List< MFTransactions> response = new MutualFundsRepository().GetMFFundInvestments(_getMFFundInvestmentsRequest);
+            return Request.CreateResponse(HttpStatusCode.OK, response);
+        }
+
+        [HttpPost]
+        [Route("api/MutualFunds/GetMFDdailyTracker")]
+        public HttpResponseMessage GetMFDdailyTracker(GetMFDailyTracker _request)
+        {
+            List<DailyMFTracker> response = new MutualFundsRepository().GetMFDdailyTracker(_request);
             return Request.CreateResponse(HttpStatusCode.OK, response);
         }
 

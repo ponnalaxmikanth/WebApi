@@ -324,5 +324,42 @@ namespace BusinessAccess
             }
             return result;
         }
+
+        public List<DailyMFTracker> GetMFDdailyTracker(GetMFDailyTracker request)
+        {
+            try
+            {
+                return MapMFDailyTracker(new MutualFundsDataAccess().GetMFDdailyTracker(request));
+            }
+            catch(Exception ex)
+            {
+
+            }
+            return null;
+        }
+
+        private List<DailyMFTracker> MapMFDailyTracker(DataTable dataTable)
+        {
+            try
+            {
+                if(dataTable!= null && dataTable.Rows.Count > 0)
+                {
+                    return (from dr in dataTable.AsEnumerable()
+                              select new DailyMFTracker()
+                              {
+                                  Date = DateTime.Parse(dr["date"].ToString()),
+                                  Investment = decimal.Parse(dr["investment"].ToString()),
+                                  CurrentValue = decimal.Parse(dr["investment"].ToString()),
+                                  Profit = decimal.Parse(dr["profit"].ToString()),
+                                  PortfolioId = int.Parse(dr["portfolioId"].ToString())
+                              }).ToList();
+                }
+            }
+            catch(Exception ex)
+            {
+
+            }
+            return null;
+        }
     }
 }

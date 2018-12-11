@@ -206,4 +206,19 @@ namespace BusinessEntity
         public int FundId { get; set; }
     }
 
+    public class DailyMFTracker
+    {
+        public int PortfolioId { get; set; }
+        public DateTime Date { get; set; }
+        public decimal Investment { get; set; }
+        public decimal CurrentValue { get; set; }
+        public decimal Profit { get; set; }
+    }
+
+    public class GetMFDailyTracker
+    {
+        public DateTime fromDate { get; set; }
+        public DateTime toDate { get; set; }
+    }
+
 }
