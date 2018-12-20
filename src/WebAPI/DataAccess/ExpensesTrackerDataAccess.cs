@@ -97,5 +97,18 @@ namespace DataAccess
                 return ds.Tables[0];
             return null;
         }
+
+        public DataTable GetExpenses(GetExpenses request)
+        {
+            List<SqlParameter> parameters = new List<SqlParameter>();
+
+            parameters.Add(new SqlParameter() { DbType = DbType.Date, ParameterName = "fromDate", Value = request.FromDate });
+            parameters.Add(new SqlParameter() { DbType = DbType.Date, ParameterName = "toDate", Value = request.ToDate });
+            
+            DataSet ds = SQLHelper.ExecuteProcedure("PersonalFinance", "GetHomeTransactions", CommandType.StoredProcedure, parameters);
+            if (ds != null)
+                return ds.Tables[0];
+            return null;
+        }
     }
 }

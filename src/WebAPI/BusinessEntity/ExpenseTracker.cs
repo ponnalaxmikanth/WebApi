@@ -16,6 +16,8 @@ namespace BusinessEntity
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public string DisplayName { get; set; }
+        public int DisplayOrder { get; set; }
         public DateTime OpeningDate { get; set; }
         public Decimal? Limit { get; set; }
         public DateTime? LimitIncreaseDate { get; set; }
@@ -47,4 +49,39 @@ namespace BusinessEntity
         public string TransactedBy { get; set; }
         public string Store { get; set; }
     }
+
+    public class GetExpenses
+    {
+        public DateTime FromDate { get; set; }
+        public DateTime ToDate { get; set; }
+    }
+
+    public class Expenses
+    {
+        public AccountDetails AccountDetails { get; set; }
+        //public int AccountId { get; set; }
+        //public string AccountName { get; set; }
+        //public decimal AccountLimit { get; set; }
+
+        //public int AccountTypeId { get; set; }
+        //public string AccountType { get; set; }
+
+        public List<Transactions> Transactions { get; set; }
+    }
+
+    public class Transactions
+    {
+        public int Id { get; set; }
+        public DateTime Date { get; set; }
+        public string GroupName { get; set; }
+        public string SubGroupName { get; set; }
+        public string Item { get; set; }
+        public decimal Amount { get; set; }
+        public string Store { get; set; }
+        public string TransactedBy { get; set; }
+
+        public ExpenseGroup ExpenseGroup { get; set; }
+        public ExpenseSubGroup ExpenseSubGroup { get; set; }
+    }
+
 }

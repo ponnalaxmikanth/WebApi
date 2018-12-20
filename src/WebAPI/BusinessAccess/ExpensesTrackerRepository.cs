@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utilities;
 
 namespace BusinessAccess
 {
@@ -18,7 +19,7 @@ namespace BusinessAccess
             {
                 return MapAccountTypes((new ExpensesTrackerDataAccess()).GetAccountTypes());
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
@@ -40,13 +41,13 @@ namespace BusinessAccess
                               }).ToList();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
             return result;
         }
-        
+
 
         public List<AccountDetails> GetAccountDetails()
         {
@@ -91,7 +92,6 @@ namespace BusinessAccess
             return result;
         }
 
-
         public List<ExpenseGroup> GetExpenseGroups()
         {
             try
@@ -134,7 +134,7 @@ namespace BusinessAccess
             {
                 return MapExpenseSubGroups((new ExpensesTrackerDataAccess()).GetExpenseSubGroups());
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
@@ -148,15 +148,15 @@ namespace BusinessAccess
                 if (dataTable != null && dataTable.Rows.Count > 0)
                 {
                     return (from dr in dataTable.AsEnumerable()
-                              select new ExpenseSubGroup()
-                              {
-                                  GroupId = int.Parse(dr["GroupId"].ToString()),
-                                  Id = int.Parse(dr["Id"].ToString()),
-                                  SubGroupName = dr["SubGroupName"].ToString(),
-                              }).ToList();
+                            select new ExpenseSubGroup()
+                            {
+                                GroupId = int.Parse(dr["GroupId"].ToString()),
+                                Id = int.Parse(dr["Id"].ToString()),
+                                SubGroupName = dr["SubGroupName"].ToString(),
+                            }).ToList();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
@@ -170,7 +170,7 @@ namespace BusinessAccess
             {
                 return GetAddExpenseStatus(new ExpensesTrackerDataAccess().AddExpenseTransaction(transaction));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
@@ -181,12 +181,12 @@ namespace BusinessAccess
         {
             try
             {
-                if(dataTable != null && dataTable.Rows.Count > 0)
+                if (dataTable != null && dataTable.Rows.Count > 0)
                 {
                     return dataTable.Rows[0][0].ToString() == "0" ? true : false;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
@@ -200,7 +200,7 @@ namespace BusinessAccess
             {
                 return MapItems((new ExpensesTrackerDataAccess()).GetItem(item));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
@@ -217,7 +217,7 @@ namespace BusinessAccess
                             select dr["Item"].ToString()).ToList();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
@@ -255,5 +255,97 @@ namespace BusinessAccess
             return null;
         }
 
+        public List<Expenses> GetExpenses(GetExpenses request)
+        {
+            try
+            {
+                return MapExpenses((new ExpensesTrackerDataAccess()).GetExpenses(request));
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return null;
+        }
+
+        private List<Expenses> MapExpenses(DataTable dataTable)
+        {
+            try
+            {
+                if (dataTable != null && dataTable.Rows.Count > 0)
+                {
+                    decimal d = -1;
+                    return (from dr in dataTable.AsEnumerable()
+                            group dr by new
+                            {
+                                AccountId = int.Parse(dr["AccountId"].ToString()),
+                                AccountName = dr["Name"].ToString(),
+                                AccountDisplayName = dr["DisplayName"].ToString(),
+                                displayOrder = int.Parse(dr["displayOrder"].ToString()),
+                                //AccountLimit = decimal.TryParse(dr["Limit"].ToString()) ? decimal.Parse(dr["Limit"].ToString()) : null,
+                                //AccountLimit = (dr["Limit"] != DBNull.Value || decimal.TryParse(dr["Limit"].ToString(), out d)) ? decimal.Parse(dr["Limit"].ToString()) : Decimal.MinValue,
+                                AccountLimit = Conversions.ToDecimal(dr["Limit"]),
+
+                                AccountTypeId = int.Parse(dr["AccountTypeId"].ToString()),
+                                AccountType = dr["AccountType"].ToString(),
+                            } into accountGrp
+                            select new Expenses()
+                            {
+                                //AccountId = accountGrp.Key.AccountId,
+                                //AccountName = accountGrp.Key.AccountName,
+                                //AccountLimit = accountGrp.Key.AccountLimit,
+
+                                //AccountTypeId = accountGrp.Key.AccountTypeId,
+                                //AccountType = accountGrp.Key.AccountType,
+
+                                AccountDetails = new AccountDetails()
+                                {
+                                    Id  = accountGrp.Key.AccountId,
+                                    Name = accountGrp.Key.AccountName,
+                                    DisplayName = accountGrp.Key.AccountDisplayName,
+                                    DisplayOrder = accountGrp.Key.displayOrder,
+                                    Limit = accountGrp.Key.AccountLimit,
+
+                                    AccountType = new AccountType()
+                                    {
+                                        Id = accountGrp.Key.AccountTypeId,
+                                        Type = accountGrp.Key.AccountType
+                                    }
+                                },
+                                Transactions = (from t in accountGrp
+                                                select new Transactions()
+                                                {
+                                                    Id = int.Parse(t["TransactionId"].ToString()),
+                                                    Date = DateTime.Parse(t["TransactionDate"].ToString()),
+                                                    GroupName = t["GroupName"].ToString(),
+                                                    SubGroupName = t["SubGroupName"].ToString(),
+                                                    Item = t["Item"].ToString(),
+                                                    Amount = decimal.Parse(t["Amount"].ToString()),
+                                                    Store = t["Store"].ToString(),
+                                                    TransactedBy = t["TransactedBy"].ToString(),
+
+
+                                                    ExpenseGroup = new ExpenseGroup()
+                                                    {
+                                                        Id = int.Parse(t["GroupId"].ToString()),
+                                                        Name = t["GroupName"].ToString(),
+                                                    },
+
+                                                    ExpenseSubGroup = new ExpenseSubGroup()
+                                                    {
+                                                        Id = int.Parse(t["SubGroupId"].ToString()),
+                                                        //GroupId = int.Parse(t["GroupId"].ToString()),
+                                                        SubGroupName = t["SubGroupName"].ToString(),
+                                                    }
+                                                }).ToList()
+                            }).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return null;
+        }
     }
 }

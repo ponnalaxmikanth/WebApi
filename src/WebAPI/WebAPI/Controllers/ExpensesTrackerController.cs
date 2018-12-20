@@ -70,5 +70,13 @@ namespace WebAPI.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
+        [HttpPost]
+        [Route("api/Expenses/GetExpenses")]
+        public HttpResponseMessage GetTransaction(GetExpenses request)
+        {
+            List<Expenses> result = new ExpensesTrackerRepository().GetExpenses(request);
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
     }
 }
