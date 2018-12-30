@@ -1,4 +1,5 @@
 ﻿using BusinessEntity;
+using BusinessEntity.MutualFunds;
 using DataAccess;
 using System;
 using System.Collections.Generic;
@@ -148,7 +149,6 @@ namespace BusinessAccess
             }
             return result;
         }
-
 
         public List<PortFolioDetails> GetPortfolios()
         {
@@ -329,7 +329,7 @@ namespace BusinessAccess
         {
             try
             {
-                return MapMFDailyTracker(new MutualFundsDataAccess().GetMFDdailyTracker(request));
+                return MapFundTransactions(new MutualFundsDataAccess().GetMFDdailyTracker(request));
             }
             catch(Exception ex)
             {
@@ -338,7 +338,7 @@ namespace BusinessAccess
             return null;
         }
 
-        private List<DailyMFTracker> MapMFDailyTracker(DataTable dataTable)
+        private List<DailyMFTracker> MapFundTransactions(DataTable dataTable)
         {
             try
             {
@@ -360,6 +360,104 @@ namespace BusinessAccess
 
             }
             return null;
+        }
+
+
+        public List<MutualFundTransactions> GetFundTransactions(MutualFundRequest getFundTransactions)
+        {
+            try
+            {
+                   return MapMutualFundTransactions(new MutualFundsDataAccess().GetFundTransactions(getFundTransactions));
+            }
+            catch(Exception ex)
+            {
+
+            }
+            return null;
+        }
+
+        private List<MutualFundTransactions> MapMutualFundTransactions(DataTable dataTable)
+        {
+            try
+            {
+                if (dataTable != null && dataTable.Rows.Count > 0)
+                {
+                    return (from dr in dataTable.AsEnumerable()
+                            group dr by new
+                            {
+                                PortfolioId = int.Parse(dr["PortfolioId"].ToString()),
+                                Portfolio = dr["Portfolio"].ToString(),
+                                FundHouseId = int.Parse(dr["FundHouseId"].ToString()),
+                                FundHouseName = dr["FundHouseName"].ToString()
+                            } into fundHousegrp
+                            select new MutualFundTransactions()
+                            {
+                                FundHouse = new MutualFundHouses()
+                                {
+                                    Id = fundHousegrp.Key.FundHouseId,
+                                    Name = fundHousegrp.Key.FundHouseName
+                                },
+                                PortfolioDetails = new MutualFundPortfolio()
+                                {
+                                    Id = fundHousegrp.Key.PortfolioId,
+                                    Name = fundHousegrp.Key.Portfolio
+                                },
+                                FundDetails = (from fund in fundHousegrp
+                                               group fund by new
+                                               {
+                                                   FundId = int.Parse(fund["FundId"].ToString()),
+                                                   SchemaCode = int.Parse(fund["SchemaCode"].ToString()),
+                                                   FundName = fund["FundName"].ToString()
+                                               } into fundsGrp
+                                               select new MutualFundDetails()
+                                               {
+                                                   Id = fundsGrp.Key.FundId,
+                                                   SchemaCode = fundsGrp.Key.SchemaCode,
+                                                   Name =  fundsGrp.Key.FundName,
+
+                                                   CurrentInvestments = GetMFFundInvestments(fundsGrp, "I"),
+                                                   RedeemTransactions = GetMFFundInvestments(fundsGrp, "R"),
+                                                   RedeemPurchases = GetMFFundInvestments(fundsGrp, "S"),
+                                               }).ToList()
+                            }).ToList();
+                }
+            }
+            catch(Exception ex) { }
+            return null;
+        }
+
+        private List<MutualFundTransaction> GetMFFundInvestments(IGrouping<object, DataRow> fundsGrp, string type)
+        {
+            List<MutualFundTransaction> result = null;
+            try
+            {
+                if(fundsGrp != null)
+                {
+                    result = (from t in fundsGrp.AsEnumerable()
+                              where t["Type"].ToString() == type
+                              select new MutualFundTransaction()
+                              {
+                                  TransactionId = int.Parse(t["TransactionId"].ToString()),
+                                  PurchaseDate = DateTime.Parse(t["PurchaseDate"].ToString()),
+                                  Amount = decimal.Parse(t["Amount"].ToString()),
+                                  CurrentValue  = decimal.Parse(t["CurrentValue"].ToString()),
+                                  Units = decimal.Parse(t["Units"].ToString()),
+                                  DividendPerNAV = decimal.Parse(t["DividendPerNAV"].ToString()),
+                                  Dividend = decimal.Parse(t["Dividend"].ToString()),
+                                  SellDate = DateTime.Parse(t["SellDate"].ToString()),
+                                  ISSIP = t["IsSipInvestment"].ToString() == "N"? false : true,
+
+                                  FolioDetails = new MutualFundFolios()
+                                  {
+                                      Id = int.Parse(t["FolioId"].ToString()),
+                                      Number = t["FolioNumber"].ToString()
+                                  }
+                              }).ToList();
+                              
+                }
+            }
+            catch(Exception ex) { }
+            return result;
         }
     }
 }

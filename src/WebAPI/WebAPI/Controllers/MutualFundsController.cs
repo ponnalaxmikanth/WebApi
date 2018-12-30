@@ -1,5 +1,6 @@
 ﻿using BusinessAccess;
 using BusinessEntity;
+using BusinessEntity.MutualFunds;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -107,7 +108,7 @@ namespace WebAPI.Controllers
         [Route("api/MutualFunds/GetMFFundInvestments")]
         public HttpResponseMessage GetMFFundInvestments(GetMFFundInvestmentsRequest _getMFFundInvestmentsRequest)
         {
-            List< MFTransactions> response = new MutualFundsRepository().GetMFFundInvestments(_getMFFundInvestmentsRequest);
+            List<MFTransactions> response = new MutualFundsRepository().GetMFFundInvestments(_getMFFundInvestmentsRequest);
             return Request.CreateResponse(HttpStatusCode.OK, response);
         }
 
@@ -116,6 +117,14 @@ namespace WebAPI.Controllers
         public HttpResponseMessage GetMFDdailyTracker(GetMFDailyTracker _request)
         {
             List<DailyMFTracker> response = new MutualFundsRepository().GetMFDdailyTracker(_request);
+            return Request.CreateResponse(HttpStatusCode.OK, response);
+        }
+
+        [HttpPost]
+        [Route("api/MutualFunds/GetFundTransactions")]
+        public HttpResponseMessage GetFundTransactions(MutualFundRequest _getFundTransactions)
+        {
+            List<MutualFundTransactions> response = new MutualFundsRepository().GetFundTransactions(_getFundTransactions);
             return Request.CreateResponse(HttpStatusCode.OK, response);
         }
 

@@ -1,4 +1,5 @@
 ﻿using BusinessEntity;
+using BusinessEntity.MutualFunds;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -192,5 +193,16 @@ namespace DataAccess
             return null;
         }
 
+        public DataTable GetFundTransactions(MutualFundRequest getFundTransactions)
+        {
+            List<SqlParameter> parameters = new List<SqlParameter>();
+
+            parameters.Add(new SqlParameter() { DbType = DbType.Int32, ParameterName = "@PortfolioId", Value = getFundTransactions.PortfolioId });
+
+            DataSet ds = SQLHelper.ExecuteProcedure("PersonalFinance", "GetIndividualTransactions", CommandType.StoredProcedure, parameters);
+            if (ds != null)
+                return ds.Tables[0];
+            return null;
+        }
     }
 }
