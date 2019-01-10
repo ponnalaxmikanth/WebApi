@@ -388,7 +388,7 @@ namespace BusinessAccess
                                 PortfolioId = int.Parse(dr["PortfolioId"].ToString()),
                                 Portfolio = dr["Portfolio"].ToString(),
                                 FundHouseId = int.Parse(dr["FundHouseId"].ToString()),
-                                FundHouseName = dr["FundHouseName"].ToString()
+                                FundHouseName = dr["DsiplayName"].ToString()
                             } into fundHousegrp
                             select new MutualFundTransactions()
                             {
