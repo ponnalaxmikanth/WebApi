@@ -440,7 +440,10 @@ namespace BusinessAccess
                                   TransactionId = int.Parse(t["TransactionId"].ToString()),
                                   PurchaseDate = DateTime.Parse(t["PurchaseDate"].ToString()),
                                   Amount = decimal.Parse(t["Amount"].ToString()),
-                                  CurrentValue  = decimal.Parse(t["CurrentValue"].ToString()),
+                                  CurrentValue = decimal.Parse(t["CurrentValue"].ToString()),
+                                  Profit = (Convert.ToDecimal(t["CurrentValue"].ToString()) - Convert.ToDecimal(t["Amount"].ToString())),
+                                  ProfitPer = GetProfitPer(t),
+                                  AgePer = CalculatePercentAgeGrowth(t),
                                   Units = decimal.Parse(t["Units"].ToString()),
                                   DividendPerNAV = decimal.Parse(t["DividendPerNAV"].ToString()),
                                   Dividend = decimal.Parse(t["Dividend"].ToString()),
@@ -459,5 +462,44 @@ namespace BusinessAccess
             catch(Exception ex) { }
             return result;
         }
+
+        private decimal GetProfitPer(DataRow dr)
+        {
+            decimal result = 0;
+            try
+            {
+                if (dr["Type"].ToString() == "I" || dr["Type"].ToString() == "R")
+                {
+                    result = (Convert.ToDecimal(dr["CurrentValue"].ToString()) - Convert.ToDecimal(dr["Amount"].ToString())) / Convert.ToDecimal(dr["Amount"].ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return Math.Round(result * 100, 2, MidpointRounding.AwayFromZero);
+        }
+
+        private decimal CalculatePercentAgeGrowth(DataRow dr)
+        {
+            decimal result = 0;
+            try
+            {
+                DateTime PurchaseDate = Convert.ToDateTime(dr["PurchaseDate"].ToString());
+                DateTime SellDate = dr["Type"].ToString() == "I" ? DateTime.Now.Date : Convert.ToDateTime(dr["SellDate"].ToString());
+                if (dr["Type"].ToString() == "I" || dr["Type"].ToString() == "R")
+                {
+                    double Amount = Convert.ToDouble(dr["Amount"].ToString());
+                    double daysAge = 365 / (SellDate - PurchaseDate.Date).TotalDays;
+                    double profit = Amount != 0 ? Convert.ToDouble(dr["CurrentValue"].ToString()) / Amount : 0;
+                    result = (decimal)Math.Round((Math.Pow(profit, daysAge) - 1) * 100, 2, MidpointRounding.AwayFromZero);
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            return result;
+        }
     }
+
 }
