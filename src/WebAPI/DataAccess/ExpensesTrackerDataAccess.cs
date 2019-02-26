@@ -104,7 +104,8 @@ namespace DataAccess
 
             parameters.Add(new SqlParameter() { DbType = DbType.Date, ParameterName = "fromDate", Value = request.FromDate });
             parameters.Add(new SqlParameter() { DbType = DbType.Date, ParameterName = "toDate", Value = request.ToDate });
-            
+            parameters.Add(new SqlParameter() { DbType = DbType.Int32, ParameterName = "accountId", Value = request.AccountId });
+
             DataSet ds = SQLHelper.ExecuteProcedure("PersonalFinance", "GetHomeTransactions", CommandType.StoredProcedure, parameters);
             if (ds != null)
                 return ds.Tables[0];

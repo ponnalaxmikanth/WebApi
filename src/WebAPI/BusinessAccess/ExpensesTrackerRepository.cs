@@ -76,13 +76,15 @@ namespace BusinessAccess
                                   Id = int.Parse(dr["AccountId"].ToString()),
                                   Name = dr["Name"].ToString(),
                                   OpeningDate = Convert.ToDateTime(dr["OpenDate"]),
+                                  DisplayName = dr["DisplayName"].ToString(),
+                                  DisplayOrder = int.Parse(dr["DisplayOrder"].ToString()),
                                   AccountType = new AccountType()
                                   {
                                       Id = int.Parse(dr["AccountTypeId"].ToString()),
                                       Type = dr["AccountType"].ToString(),
                                   }
 
-                              }).ToList();
+                              }).ToList().OrderBy(r=> r.DisplayOrder).ToList();
                 }
             }
             catch (Exception ex)
@@ -272,7 +274,7 @@ namespace BusinessAccess
         {
             try
             {
-                if (dataTable != null && dataTable.Rows.Count > 0)
+                if (dataTable != null)
                 {
                     decimal d = -1;
                     return (from dr in dataTable.AsEnumerable()
