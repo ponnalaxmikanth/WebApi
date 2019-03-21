@@ -78,4 +78,25 @@ namespace BusinessEntity.MutualFunds
         public DateTime CreatedDate { get; set; }
         public bool isDefaultFolio { get; set; }
     }
+
+    public class Investments
+    {
+        //public MF_Portfolio Portfolio { get; set; }
+        public string FundName { get; set; }
+        public DateTime Date { get; set; }
+        public decimal Investment { get; set; }
+        public decimal CurrentValue { get; set; }
+        public decimal Profit { get; set; }
+        public decimal RedeemInvest { get; set; }
+        public decimal Value { get; set; }
+
+        public decimal CurrentProfit { get; set; }
+        public decimal Dividend { get; set; }
+
+        public decimal ProfitPer { get; set; }
+        public decimal RedeemValue { get; set; }
+
+        public decimal AgePer { get; set; }
+        public string Type { get; set; }
+    }
 }

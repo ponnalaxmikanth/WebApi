@@ -14,11 +14,12 @@ namespace WebAPI.Controllers
     [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class MutualFundsController : ApiController
     {
+        readonly MutualFundsRepository _mutualFundsRepository = new MutualFundsRepository();
         [HttpGet]
         [Route("api/MutualFunds/GetFundHouses")]
         public HttpResponseMessage GetFundHouses()
         {
-            List<MF_FundHouses> result = new MutualFundsRepository().GetFundHouses();
+            List<MF_FundHouses> result = _mutualFundsRepository.GetFundHouses();
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
@@ -26,7 +27,7 @@ namespace WebAPI.Controllers
         [Route("api/MutualFunds/GetFundTypes")]
         public HttpResponseMessage GetFundTypes()
         {
-            List<MF_FundTypes> result = new MutualFundsRepository().GetFundTypes();
+            List<MF_FundTypes> result = _mutualFundsRepository.GetFundTypes();
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
@@ -34,7 +35,7 @@ namespace WebAPI.Controllers
         [Route("api/MutualFunds/GetFundCategory")]
         public HttpResponseMessage GetFundCategory()
         {
-            List<MF_FundCategory> result = new MutualFundsRepository().GetFundCategory();
+            List<MF_FundCategory> result = _mutualFundsRepository.GetFundCategory();
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
@@ -43,7 +44,7 @@ namespace WebAPI.Controllers
         [Route("api/MutualFunds/GetFundOptions")]
         public HttpResponseMessage GetFundOptions()
         {
-            List<MF_FundOptions> result = new MutualFundsRepository().GetFundOptions();
+            List<MF_FundOptions> result = _mutualFundsRepository.GetFundOptions();
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
@@ -52,7 +53,7 @@ namespace WebAPI.Controllers
         [Route("api/MutualFunds/GetFunds")]
         public HttpResponseMessage GetFunds()
         {
-            List<Funds> result = new MutualFundsRepository().GetFunds();
+            List<Funds> result = _mutualFundsRepository.GetFunds();
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
@@ -60,7 +61,7 @@ namespace WebAPI.Controllers
         [Route("api/MutualFunds/GetFolios")]
         public HttpResponseMessage GetFolios()
         {
-            List<MF_Folios> result = new MutualFundsRepository().GetFolios();
+            List<MF_Folios> result = _mutualFundsRepository.GetFolios();
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
@@ -68,7 +69,7 @@ namespace WebAPI.Controllers
         [Route("api/MutualFunds/GetPortfolios")]
         public HttpResponseMessage GetPortfolios()
         {
-            List<PortFolioDetails> result = new MutualFundsRepository().GetPortfolios();
+            List<PortFolioDetails> result = _mutualFundsRepository.GetPortfolios();
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
@@ -76,7 +77,7 @@ namespace WebAPI.Controllers
         [Route("api/MutualFunds/GetMyFunds")]
         public HttpResponseMessage GetMyFunds(GetMyFundsRequest request)
         {
-            List<MFFund> result = new MutualFundsRepository().GetMyFunds(request);
+            List<MFFund> result = _mutualFundsRepository.GetMyFunds(request);
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
@@ -84,7 +85,7 @@ namespace WebAPI.Controllers
         [Route("api/MutualFunds/AddTransaction")]
         public HttpResponseMessage AddTransaction(AddMFTransactionRequest _mfTransactionRequest)
         {
-            AddMFTransactionResponse response = new MutualFundsRepository().AddTransaction(_mfTransactionRequest);
+            AddMFTransactionResponse response = _mutualFundsRepository.AddTransaction(_mfTransactionRequest);
             return Request.CreateResponse(HttpStatusCode.OK, response);
         }
 
@@ -92,7 +93,7 @@ namespace WebAPI.Controllers
         [Route("api/MutualFunds/GetFundNav")]
         public HttpResponseMessage GetFundNav(GetFundNavRequest _getFundNavRequest)
         {
-            decimal value = new MutualFundsRepository().GetFundNav(_getFundNavRequest);
+            decimal value = _mutualFundsRepository.GetFundNav(_getFundNavRequest);
             return Request.CreateResponse(HttpStatusCode.OK, value);
         }
 
@@ -100,7 +101,7 @@ namespace WebAPI.Controllers
         [Route("api/MutualFunds/GetFundValue")]
         public HttpResponseMessage GetFundValue(GetFundValueRequst _getFundValueRequest)
         {
-            FundValueResponse response = new MutualFundsRepository().GetFundValue(_getFundValueRequest);
+            FundValueResponse response = _mutualFundsRepository.GetFundValue(_getFundValueRequest);
             return Request.CreateResponse(HttpStatusCode.OK, response);
         }
 
@@ -108,7 +109,7 @@ namespace WebAPI.Controllers
         [Route("api/MutualFunds/GetMFFundInvestments")]
         public HttpResponseMessage GetMFFundInvestments(GetMFFundInvestmentsRequest _getMFFundInvestmentsRequest)
         {
-            List<MFTransactions> response = new MutualFundsRepository().GetMFFundInvestments(_getMFFundInvestmentsRequest);
+            List<MFTransactions> response = _mutualFundsRepository.GetMFFundInvestments(_getMFFundInvestmentsRequest);
             return Request.CreateResponse(HttpStatusCode.OK, response);
         }
 
@@ -116,7 +117,7 @@ namespace WebAPI.Controllers
         [Route("api/MutualFunds/GetMFDdailyTracker")]
         public HttpResponseMessage GetMFDdailyTracker(GetMFDailyTracker _request)
         {
-            List<DailyMFTracker> response = new MutualFundsRepository().GetMFDdailyTracker(_request);
+            List<DailyMFTracker> response = _mutualFundsRepository.GetMFDdailyTracker(_request);
             return Request.CreateResponse(HttpStatusCode.OK, response);
         }
 
@@ -124,8 +125,15 @@ namespace WebAPI.Controllers
         [Route("api/MutualFunds/GetFundTransactions")]
         public HttpResponseMessage GetFundTransactions(MutualFundRequest _getFundTransactions)
         {
-            List<MutualFundTransactions> response = new MutualFundsRepository().GetFundTransactions(_getFundTransactions);
+            List<MutualFundTransactions> response = _mutualFundsRepository.GetFundTransactions(_getFundTransactions);
             return Request.CreateResponse(HttpStatusCode.OK, response);
+        }
+
+        [HttpPost]
+        [Route("api/MutualFunds/GetIndividualInvestments")]
+        public HttpResponseMessage GetIndividualInvestments(DashboardIndividual request)
+        {
+            return Request.CreateResponse(HttpStatusCode.OK, _mutualFundsRepository.GetIndividualInvestments(request));
         }
 
     }

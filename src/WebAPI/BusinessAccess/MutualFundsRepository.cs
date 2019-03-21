@@ -12,9 +12,16 @@ namespace BusinessAccess
 {
     public class MutualFundsRepository
     {
+        readonly MutualFundsDataAccess _mutualFundsDataAccess = new MutualFundsDataAccess();
+
+        public MutualFundsRepository()
+        {
+            //this._mutualFundsDataAccess = _mutualFundsDataAccess;
+        }
+
         public List<Funds> GetFunds()
         {
-            return MapFunds(new MutualFundsDataAccess().GetFunds());
+            return MapFunds(_mutualFundsDataAccess.GetFunds());
         }
 
         private List<Funds> MapFunds(DataTable datatable)
@@ -39,7 +46,7 @@ namespace BusinessAccess
 
         public List<MF_FundHouses> GetFundHouses()
         {
-            return MapFundHouses(new MutualFundsDataAccess().GetFundHouses());
+            return MapFundHouses(_mutualFundsDataAccess.GetFundHouses());
         }
 
         private List<MF_FundHouses> MapFundHouses(DataTable datatable)
@@ -61,7 +68,7 @@ namespace BusinessAccess
 
         public List<MF_FundTypes> GetFundTypes()
         {
-            return MapFundTypes(new MutualFundsDataAccess().GetFundTypes());
+            return MapFundTypes(_mutualFundsDataAccess.GetFundTypes());
         }
 
         private List<MF_FundTypes> MapFundTypes(DataTable datatable)
@@ -83,7 +90,7 @@ namespace BusinessAccess
 
         public List<MF_FundCategory> GetFundCategory()
         {
-            return MapFundCategory(new MutualFundsDataAccess().GetFundCategory());
+            return MapFundCategory(_mutualFundsDataAccess.GetFundCategory());
         }
 
         private List<MF_FundCategory> MapFundCategory(DataTable datatable)
@@ -105,7 +112,7 @@ namespace BusinessAccess
 
         public List<MF_FundOptions> GetFundOptions()
         {
-            return MapFundOptions(new MutualFundsDataAccess().GetFundOptions());
+            return MapFundOptions(_mutualFundsDataAccess.GetFundOptions());
         }
 
         private List<MF_FundOptions> MapFundOptions(DataTable datatable)
@@ -127,7 +134,7 @@ namespace BusinessAccess
 
         public List<MF_Folios> GetFolios()
         {
-            return MapFolios(new MutualFundsDataAccess().GetFolios());
+            return MapFolios(_mutualFundsDataAccess.GetFolios());
         }
 
         private List<MF_Folios> MapFolios(DataTable datatable)
@@ -152,7 +159,7 @@ namespace BusinessAccess
 
         public List<PortFolioDetails> GetPortfolios()
         {
-            return MapPortFolioDetails(datatable: new MutualFundsDataAccess().GetPortfolios());
+            return MapPortFolioDetails(datatable: _mutualFundsDataAccess.GetPortfolios());
         }
 
         private List<PortFolioDetails> MapPortFolioDetails(DataTable datatable)
@@ -174,7 +181,7 @@ namespace BusinessAccess
 
         public List<MFFund> GetMyFunds(GetMyFundsRequest request)
         {
-            return MapMyFunds(datatable: new MutualFundsDataAccess().GetMyFunds(request));
+            return MapMyFunds(datatable: _mutualFundsDataAccess.GetMyFunds(request));
         }
 
         private List<MFFund> MapMyFunds(DataTable datatable)
@@ -223,7 +230,7 @@ namespace BusinessAccess
         {
             int retVal = -1;
             AddMFTransactionResponse response = new AddMFTransactionResponse();
-             DataTable dtResult = new MutualFundsDataAccess().AddTransaction(mfTransactionRequest);
+             DataTable dtResult = _mutualFundsDataAccess.AddTransaction(mfTransactionRequest);
 
             if (dtResult == null || dtResult.Rows.Count <= 0)
             {
@@ -258,7 +265,7 @@ namespace BusinessAccess
 
         public decimal GetFundNav(GetFundNavRequest getFundNavRequest)
         {
-            DataTable dtResult = new MutualFundsDataAccess().GetFundNav(getFundNavRequest);
+            DataTable dtResult = _mutualFundsDataAccess.GetFundNav(getFundNavRequest);
 
             if (dtResult != null && dtResult.Rows.Count > 0)
                 return decimal.Parse(dtResult.Rows[0]["NAV"].ToString());
@@ -268,7 +275,7 @@ namespace BusinessAccess
 
         public FundValueResponse GetFundValue(GetFundValueRequst getFundValueRequest)
         {
-            DataTable dtResult = new MutualFundsDataAccess().GetFundValue(getFundValueRequest);
+            DataTable dtResult = _mutualFundsDataAccess.GetFundValue(getFundValueRequest);
 
             return MapFundValue(dtResult);
         }
@@ -296,7 +303,7 @@ namespace BusinessAccess
 
         public List<MFTransactions> GetMFFundInvestments(GetMFFundInvestmentsRequest _getMFFundInvestmentsRequest)
         {
-            DataTable dtResult = new MutualFundsDataAccess().GetMyMFFundInvestments(_getMFFundInvestmentsRequest);
+            DataTable dtResult = _mutualFundsDataAccess.GetMyMFFundInvestments(_getMFFundInvestmentsRequest);
 
             return MapMFFundInvestments(dtResult);
         }
@@ -329,7 +336,7 @@ namespace BusinessAccess
         {
             try
             {
-                return MapFundTransactions(new MutualFundsDataAccess().GetMFDdailyTracker(request));
+                return MapFundTransactions(_mutualFundsDataAccess.GetMFDdailyTracker(request));
             }
             catch(Exception ex)
             {
@@ -367,7 +374,7 @@ namespace BusinessAccess
         {
             try
             {
-                   return MapMutualFundTransactions(new MutualFundsDataAccess().GetFundTransactions(getFundTransactions));
+                   return MapMutualFundTransactions(_mutualFundsDataAccess.GetFundTransactions(getFundTransactions));
             }
             catch(Exception ex)
             {
@@ -499,6 +506,69 @@ namespace BusinessAccess
             {
             }
             return result;
+        }
+
+        public List<Investments> GetIndividualInvestments(DashboardIndividual request)
+        {
+            return MapIndividualInvestments(request, _mutualFundsDataAccess.GetInvestments(request));
+        }
+
+        private List<Investments> MapIndividualInvestments(DashboardIndividual request, DataTable dataTable)
+        {
+            List<Investments> result = null;
+            try
+            {
+                if (dataTable != null)
+                {
+                    result = (from dr in dataTable.AsEnumerable()
+                                  //where (dr["Type"].ToString() == "I")
+                              select new Investments()
+                              {
+                                  Date = (dr["Type"].ToString() == "R") ? Convert.ToDateTime(dr["SellDate"].ToString()) : Convert.ToDateTime(dr["PurchaseDate"].ToString()),
+                                  FundName = dr["FundName"].ToString(),
+                                  Investment = decimal.Round(Convert.ToDecimal(dr["Amount"].ToString()), 2, MidpointRounding.AwayFromZero),
+                                  CurrentValue = decimal.Round(Convert.ToDecimal(dr["CurrentValue"].ToString()), 2, MidpointRounding.AwayFromZero),
+                                  Profit = GetProfitPer(dr),
+                                  //RedeemInvest = decimal.Round(Convert.ToDecimal(dr["RedeemAmount"].ToString()), 2, MidpointRounding.AwayFromZero),
+
+                                  AgePer = CalculatePercentAgeGrowth(dr),
+                                  Type = dr["Type"].ToString()
+                              }).ToList();
+
+                    //var redeemTrans = (from dr in dataTable.AsEnumerable()
+                    //                   where (dr["Type"].ToString() == "R")
+                    //                   select new Investments()
+                    //                   {
+                    //                       Date = Convert.ToDateTime(dr["SellDate"].ToString()),
+                    //                       FundName = dr["FundName"].ToString(),
+                    //                       Investment = decimal.Round(Convert.ToDecimal(dr["RedeemAmount"].ToString()), 2, MidpointRounding.AwayFromZero),
+                    //                       CurrentValue = decimal.Round(Convert.ToDecimal(dr["RedeemValue"].ToString()), 2, MidpointRounding.AwayFromZero),
+                    //                       Profit = GetProfitPer(dr),
+                    //                       RedeemInvest = decimal.Round(Convert.ToDecimal(dr["RedeemValue"].ToString()), 2, MidpointRounding.AwayFromZero),
+                    //                       AgePer = CalculatePercentAgeGrowth(dr),
+                    //                       Type = "R"
+                    //                   });
+
+                    //if (redeemTrans != null && redeemTrans.Count() > 0)
+                    //    result = result.Union(redeemTrans).ToList();
+
+                    //var sellTrans = (from dr in dataTable.AsEnumerable()
+                    //                 where (dr["Type"].ToString() == "S")
+                    //                 select new Investments()
+                    //                 {
+                    //                     Date = Convert.ToDateTime(dr["PurchaseDate"].ToString()),
+                    //                     FundName = dr["FundName"].ToString(),
+                    //                     Investment = decimal.Round(Convert.ToDecimal(dr["Amount"].ToString()), 2, MidpointRounding.AwayFromZero),
+                    //                     Type = "S"
+                    //                 });
+                    //if (redeemTrans != null && redeemTrans.Count() > 0)
+                    //    result = result.Union(sellTrans).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            return result.OrderByDescending(r => r.Date).ToList();
         }
     }
 

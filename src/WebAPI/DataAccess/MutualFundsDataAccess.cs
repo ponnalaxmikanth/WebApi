@@ -64,8 +64,6 @@ namespace DataAccess
             return null;
         }
         
-
-
         public DataTable GetFunds()
         {
             List<SqlParameter> parameters = new List<SqlParameter>();
@@ -204,5 +202,20 @@ namespace DataAccess
                 return ds.Tables[0];
             return null;
         }
+
+        public DataTable GetInvestmentsByMonth(DashboardRequest request)
+        {
+            List<SqlParameter> parameters = new List<SqlParameter>();
+
+            parameters.Add(new SqlParameter() { DbType = DbType.String, ParameterName = "FromDate", Value = request.FromDate });
+            parameters.Add(new SqlParameter() { DbType = DbType.String, ParameterName = "ToDate", Value = request.ToDate });
+            parameters.Add(new SqlParameter() { DbType = DbType.String, ParameterName = "portfolioId", Value = request.PortfolioId });
+
+            DataSet ds = SQLHelper.ExecuteProcedure("PersonalFinance", "Get_Investments_Details", CommandType.StoredProcedure, parameters);
+            if (ds != null)
+                return ds.Tables[0];
+            return null;
+        }
+
     }
 }
