@@ -1,39 +1,39 @@
 ﻿using BusinessEntity;
+using DataAccess;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DataAccess;
 using System.Data;
+using System.Linq;
+using Utilities;
 
 namespace BusinessAccess
 {
     public class StocksBusinessAccess
     {
-        public List<StockPurchases> ToGetStocks(DateTime fromdate, DateTime todate)
+        StocksDataAccess _StocksDataAccess;
+        public StocksBusinessAccess()
         {
-            StocksDataAccess sda = new StocksDataAccess();
-           List<StockPurchases> sp = new List<StockPurchases>();
-            DataTable da = sda.GetToStocks(fromdate, todate);
-            sp = MapsStocks(da);
-           return sp;
+            _StocksDataAccess = new StocksDataAccess();
         }
-        private List<StockPurchases> MapsStocks(DataTable da)
-        {
-            List<StockPurchases> lsp = new List<StockPurchases>();
-            lsp = (from DataRow dr in da.Rows
-                   select new StockPurchases()
-                           {
-                               NumbersofStocks = Convert.ToInt32(dr["No_of_Stocks"]),
-                               StocksId = dr["StockID"].ToString(),
-                               PurchaseDate = Convert.ToDateTime(dr["Purchasedatetime"].ToString()),
-                               StocksPrice = decimal.Round(Convert.ToDecimal(dr["Stockprice"].ToString()), 3, MidpointRounding.AwayFromZero),
 
-                               //  PurchaseDate = dr["PurchaseDate"].ToString(),
-                               //  StocksPrice = dr["StocksPrice"].ToString()
-                           }).ToList();       
-            return lsp;
+        public List<StocksEntity> ToGetStocks(DateTime fromdate, DateTime todate, int Detail)
+        {
+            return MapsStocks(_StocksDataAccess.GetToStocks(fromdate, todate, Detail));
         }
+
+        private List<StocksEntity> MapsStocks(DataTable da)
+        {
+            return (from DataRow dr in da.Rows
+                   select new StocksEntity()
+                   {
+                       Symbol = dr["StockID"].ToString(),
+                       Date = DateTime.Parse(dr["PurchaseDate"].ToString()),
+                       volume = Conversions.ToDouble(dr["Quantity"].ToString(), 0),
+                       close = Conversions.ToDouble(dr["Price"].ToString(), 0),
+                       dividendamount = Conversions.ToDouble(dr["Dividend"].ToString(), 0),
+                   }).ToList();
+
+        }
+
     }
 }

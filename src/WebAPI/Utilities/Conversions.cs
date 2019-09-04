@@ -48,5 +48,19 @@ namespace Utilities
             return retValue;
         }
 
+        public static double ToDouble(object param, double defaultValue)
+        {
+            double retValue = defaultValue;
+            try
+            {
+                if (param == null) return defaultValue;
+                double.TryParse(param.ToString(), out retValue);
+            }
+            catch (Exception ex)
+            {
+            }
+            return retValue;
+        }
+
     }
 }

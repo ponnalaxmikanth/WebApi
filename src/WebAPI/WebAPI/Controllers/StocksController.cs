@@ -13,21 +13,18 @@ namespace WebAPI.Controllers
     [EnableCors(origins:"*", headers:"*", methods:"*")]
     public class StocksController : ApiController
     {
-        //public HttpResponseMessage post(StocksRequest request)
-        //{
-        //    StocksBusinessAccess fs = new StocksBusinessAccess();
-        //    List<StockPurchases> lsp = new List<StockPurchases>();
-        //    lsp = fs.ToGetStocks(request.FromDate, request.ToDate);
-        //    return Request.CreateResponse(HttpStatusCode.OK, lsp);
-        //}
+        StocksBusinessAccess _StocksBusinessAccess;
+        public StocksController()
+        {
+            _StocksBusinessAccess = new StocksBusinessAccess();
+        }
 
         [HttpPost]
         public HttpResponseMessage GetStocks(StocksRequest request)
         {
-            StocksBusinessAccess fs = new StocksBusinessAccess();
-            List<StockPurchases> lsp = new List<StockPurchases>();
-            lsp = fs.ToGetStocks(request.FromDate, request.ToDate);
+            List<StocksEntity> lsp = _StocksBusinessAccess.ToGetStocks(request.FromDate, request.ToDate, request.Detail);
             return Request.CreateResponse(HttpStatusCode.OK, lsp);
         }
+
     }
 }
