@@ -14,7 +14,7 @@ namespace DataAccess
         public DataTable GetAccountTypes()
         {
             List<SqlParameter> parameters = new List<SqlParameter>();
-            DataSet ds = SQLHelper.ExecuteProcedure("PersonalFinance", "GetAccountTypes", CommandType.StoredProcedure, parameters);
+            DataSet ds = SQLHelper.ExecuteProcedure("HomeTransactions", "GetAccountTypes", CommandType.StoredProcedure, parameters);
             if (ds != null)
                 return ds.Tables[0];
             return null;
@@ -23,7 +23,7 @@ namespace DataAccess
         public DataTable GetAccountDetails()
         {
             List<SqlParameter> parameters = new List<SqlParameter>();
-            DataSet ds = SQLHelper.ExecuteProcedure("PersonalFinance", "GetAccountDetails", CommandType.StoredProcedure, parameters);
+            DataSet ds = SQLHelper.ExecuteProcedure("HomeTransactions", "GetAccountDetails", CommandType.StoredProcedure, parameters);
             if (ds != null)
                 return ds.Tables[0];
             return null;
@@ -32,7 +32,7 @@ namespace DataAccess
         public DataTable GetExpenseGroups()
         {
             List<SqlParameter> parameters = new List<SqlParameter>();
-            DataSet ds = SQLHelper.ExecuteProcedure("PersonalFinance", "GetExpenseGroups", CommandType.StoredProcedure, parameters);
+            DataSet ds = SQLHelper.ExecuteProcedure("HomeTransactions", "GetExpenseGroups", CommandType.StoredProcedure, parameters);
             if (ds != null)
                 return ds.Tables[0];
             return null;
@@ -41,7 +41,7 @@ namespace DataAccess
         public DataTable GetExpenseSubGroups()
         {
             List<SqlParameter> parameters = new List<SqlParameter>();
-            DataSet ds = SQLHelper.ExecuteProcedure("PersonalFinance", "GetExpenseSubGroups", CommandType.StoredProcedure, parameters);
+            DataSet ds = SQLHelper.ExecuteProcedure("HomeTransactions", "GetExpenseSubGroups", CommandType.StoredProcedure, parameters);
             if (ds != null)
                 return ds.Tables[0];
             return null;
@@ -50,7 +50,7 @@ namespace DataAccess
         public DataTable GetStores()
         {
             List<SqlParameter> parameters = new List<SqlParameter>();
-            DataSet ds = SQLHelper.ExecuteProcedure("PersonalFinance", "GetStore", CommandType.StoredProcedure, parameters);
+            DataSet ds = SQLHelper.ExecuteProcedure("HomeTransactions", "GetStore", CommandType.StoredProcedure, parameters);
             if (ds != null)
                 return ds.Tables[0];
             return null;
@@ -61,7 +61,7 @@ namespace DataAccess
             List<SqlParameter> parameters = new List<SqlParameter>();
             parameters.Add(new SqlParameter() { DbType = DbType.String, ParameterName = "item", Value = item });
 
-            DataSet ds = SQLHelper.ExecuteProcedure("PersonalFinance", "GetItem", CommandType.StoredProcedure, parameters);
+            DataSet ds = SQLHelper.ExecuteProcedure("HomeTransactions", "GetItem", CommandType.StoredProcedure, parameters);
             if (ds != null)
                 return ds.Tables[0];
             return null;
@@ -72,7 +72,7 @@ namespace DataAccess
             List<SqlParameter> parameters = new List<SqlParameter>();
             parameters.Add(new SqlParameter() { DbType = DbType.String, ParameterName = "store", Value = store });
 
-            DataSet ds = SQLHelper.ExecuteProcedure("PersonalFinance", "GetStore", CommandType.StoredProcedure, parameters);
+            DataSet ds = SQLHelper.ExecuteProcedure("HomeTransactions", "GetStore", CommandType.StoredProcedure, parameters);
             if (ds != null)
                 return ds.Tables[0];
             return null;
@@ -92,7 +92,7 @@ namespace DataAccess
             parameters.Add(new SqlParameter() { DbType = DbType.String, ParameterName = "transactedBy", Value = transaction.TransactedBy });
             parameters.Add(new SqlParameter() { DbType = DbType.String, ParameterName = "store", Value = transaction.Store });
 
-            DataSet ds = SQLHelper.ExecuteProcedure("PersonalFinance", "AddHomeTransactions", CommandType.StoredProcedure, parameters);
+            DataSet ds = SQLHelper.ExecuteProcedure("HomeTransactions", "AddHomeTransactions", CommandType.StoredProcedure, parameters);
             if (ds != null)
                 return ds.Tables[0];
             return null;
@@ -106,10 +106,24 @@ namespace DataAccess
             parameters.Add(new SqlParameter() { DbType = DbType.Date, ParameterName = "toDate", Value = request.ToDate });
             parameters.Add(new SqlParameter() { DbType = DbType.Int32, ParameterName = "accountId", Value = request.AccountId });
 
-            DataSet ds = SQLHelper.ExecuteProcedure("PersonalFinance", "GetHomeTransactions", CommandType.StoredProcedure, parameters);
+            DataSet ds = SQLHelper.ExecuteProcedure("HomeTransactions", "GetHomeTransactions", CommandType.StoredProcedure, parameters);
             if (ds != null)
                 return ds.Tables[0];
             return null;
         }
+
+        public DataTable GetBudget(GetExpenses request)
+        {
+            List<SqlParameter> parameters = new List<SqlParameter>();
+
+            parameters.Add(new SqlParameter() { DbType = DbType.Date, ParameterName = "fromDate", Value = request.FromDate });
+            parameters.Add(new SqlParameter() { DbType = DbType.Date, ParameterName = "toDate", Value = request.ToDate });
+
+            DataSet ds = SQLHelper.ExecuteProcedure("HomeTransactions", "GetBudgetTransactions", CommandType.StoredProcedure, parameters);
+            if (ds != null)
+                return ds.Tables[0];
+            return null;
+        }
+
     }
 }

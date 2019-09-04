@@ -16,7 +16,8 @@ namespace DataAccess
         {
             List<SqlParameter> parameters = new List<SqlParameter>();
 
-            parameters.Add(new SqlParameter() { DbType = DbType.String, ParameterName = "PortfolioId", Value = request.PortfolioId });
+            parameters.Add(new SqlParameter() { DbType = DbType.Int32, ParameterName = "PortfolioId", Value = request.PortfolioId });
+            parameters.Add(new SqlParameter() { DbType = DbType.String, ParameterName = "Type", Value = request.Type });
 
             DataSet ds = SQLHelper.ExecuteProcedure("PersonalFinance", "GetIndividualTransactions", CommandType.StoredProcedure, parameters);
             if (ds != null)

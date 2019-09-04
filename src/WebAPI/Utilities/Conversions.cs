@@ -33,5 +33,20 @@ namespace Utilities
             }
             return retValue;
         }
+
+        public static decimal ToDecimal(object param, decimal defaultValue)
+        {
+            decimal retValue = defaultValue;
+            try
+            {
+                if (param == null) return defaultValue;
+                decimal.TryParse(param.ToString(), out retValue);
+            }
+            catch (Exception ex)
+            {
+            }
+            return retValue;
+        }
+
     }
 }

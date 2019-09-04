@@ -78,5 +78,13 @@ namespace WebAPI.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, result);
         }
 
+        [HttpPost]
+        [Route("api/Expenses/GetBudget")]
+        public HttpResponseMessage GetBudget(GetExpenses request)
+        {
+            ExpenseTracker result = new ExpensesTrackerRepository().GetBudget(request);
+            return Request.CreateResponse(HttpStatusCode.OK, result);
+        }
+
     }
 }

@@ -321,8 +321,10 @@ namespace BusinessAccess
                                                     Date = DateTime.Parse(t["TransactionDate"].ToString()),
                                                     GroupName = t["GroupName"].ToString(),
                                                     SubGroupName = t["SubGroupName"].ToString(),
-                                                    Item = t["Item"].ToString(),
-                                                    Amount = decimal.Parse(t["Amount"].ToString()),
+                                                    //Item = t["Item"].ToString(),
+                                                    Debit = decimal.Parse(t["Debit"].ToString()),
+                                                    Credit = decimal.Parse(t["Credit"].ToString()),
+                                                    Balance = decimal.Parse(t["Balance"].ToString()),
                                                     Store = t["Store"].ToString(),
                                                     TransactedBy = t["TransactedBy"].ToString(),
 
@@ -348,6 +350,60 @@ namespace BusinessAccess
 
             }
             return null;
+        }
+
+        public ExpenseTracker GetBudget(GetExpenses request)
+        {
+            try
+            {
+                return MapBudget((new ExpensesTrackerDataAccess()).GetBudget(request));
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return null;
+        }
+
+        private ExpenseTracker MapBudget(DataTable dataTable)
+        {
+            ExpenseTracker epenseTracker = new ExpenseTracker();
+            try
+            {
+                if (dataTable != null && dataTable.Rows.Count > 0)
+                {
+                    epenseTracker.Expenses = (from dr in dataTable.AsEnumerable()
+                            where dr["Group"].ToString().ToUpper() != "TOTAL"
+                            select new Budget()
+                            {
+                                Group = dr["Group"].ToString(),
+                                SubGroup = dr["SubGroup"].ToString(),
+                                Credit = Conversions.ToDecimal(dr["credit"].ToString(), Convert.ToDecimal(-999999.99)),
+                                Debit = decimal.Parse(dr["debit"].ToString()),
+                                BudgetAmount = decimal.Parse(dr["Budget"].ToString()),
+                                Balance = decimal.Parse(dr["Balance"].ToString()),
+                                Level = int.Parse(dr["level"].ToString())
+                            }).ToList();
+
+                    epenseTracker.Summary = (from dr in dataTable.AsEnumerable()
+                                              where dr["Group"].ToString().ToUpper() == "TOTAL"
+                                              select new Budget()
+                                              {
+                                                  Group = dr["Group"].ToString(),
+                                                  SubGroup = dr["SubGroup"].ToString(),
+                                                  Credit = Conversions.ToDecimal(dr["credit"].ToString(), Convert.ToDecimal(-999999.99)),
+                                                  Debit = decimal.Parse(dr["debit"].ToString()),
+                                                  BudgetAmount = decimal.Parse(dr["Budget"].ToString()),
+                                                  Balance = decimal.Parse(dr["Balance"].ToString()),
+                                                  Level = int.Parse(dr["level"].ToString())
+                                              }).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return epenseTracker;
         }
     }
 }

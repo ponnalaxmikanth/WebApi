@@ -77,12 +77,30 @@ namespace BusinessEntity
         public string GroupName { get; set; }
         public string SubGroupName { get; set; }
         public string Item { get; set; }
-        public decimal Amount { get; set; }
+        public decimal Debit { get; set; }
+        public decimal Credit { get; set; }
+        public decimal Balance { get; set; }
         public string Store { get; set; }
         public string TransactedBy { get; set; }
 
         public ExpenseGroup ExpenseGroup { get; set; }
         public ExpenseSubGroup ExpenseSubGroup { get; set; }
+    }
+
+    public class Budget
+    {
+        public string Group { get; set; }
+        public string SubGroup { get; set; }
+        public decimal Debit { get; set; }
+        public decimal Credit { get; set; }
+        public decimal Balance { get; set; }
+        public decimal BudgetAmount { get; set; }
+        public int Level { get; set; }
+    }
+
+    public class ExpenseTracker {
+        public List<Budget> Expenses { get; set; }
+        public List<Budget> Summary { get; set; }
     }
 
 }
