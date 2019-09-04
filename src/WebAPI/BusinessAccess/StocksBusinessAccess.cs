@@ -31,6 +31,7 @@ namespace BusinessAccess
                        volume = Conversions.ToDouble(dr["Quantity"].ToString(), 0),
                        close = Conversions.ToDouble(dr["Price"].ToString(), 0),
                        dividendamount = Conversions.ToDouble(dr["Dividend"].ToString(), 0),
+                       MarketPrice = Conversions.ToDouble(dr["MarketPrice"].ToString(), 0),
                    }).ToList();
 
         }

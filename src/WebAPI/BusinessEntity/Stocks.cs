@@ -33,6 +33,7 @@ namespace BusinessEntity
         public double adjustedclose { get; set; }
         public double volume { get; set; }
         public double dividendamount { get; set; }
+        public double MarketPrice { get; set; }
     }
 
     public class StockValues
