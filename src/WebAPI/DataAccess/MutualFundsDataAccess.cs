@@ -31,7 +31,11 @@ namespace DataAccess
 
             DataSet ds = SQLHelper.ExecuteProcedure("PersonalFinance", "Get_MF_FundHouses", CommandType.StoredProcedure, parameters);
             if (ds != null)
+            {
+                string jsonString = Utilities.Conversions.DataTableToJSON(ds.Tables[0]);
+                Utilities.WriteToFile.Write(@"C:\Temp\FundHouses.json", jsonString);
                 return ds.Tables[0];
+            }
             return null; 
         }
 
